@@ -1,3 +1,10 @@
+/**Create a class called TestPerson which includes the main method
+ * Arthor: Preyanuch   Phutsay
+ * ID: 623040275-5
+ * Sec: 2
+ * Date: 6/1/2020
+ */
+
 package phutsay.preyanuch.lab4;
 
 public class TestPerson {
