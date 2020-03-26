@@ -5,155 +5,103 @@
  * Date: 8/3/2020
  */
 package phutsay.preyanuch.lab10;
-
-import javax.swing.*;
-
-import java.awt.event.*;
-import java.io.File;
-import java.awt.*;
-
 import phutsay.preyanuch.lab8.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 
-public class PersonFormV11 extends PersonFormV10{
-
-
+public class PersonFormV11 extends PersonFormV10 {
     private static final long serialVersionUID = 1L;
-    protected JMenuItem itemCustom = new JMenuItem("Custom");;
-    protected JColorChooser chooseColor;
-    protected JOptionPane dialogTest;
-    
-    protected Object[] options = {"OK", "Cancel", "Reset"};
 
-    protected Color fontColor;
-    protected int sourceDialog, sourceOpenFileChooser, sourceSaveFileChooser;
-    protected JFileChooser openFileChooser, saveFileChooser;
+    protected JMenuItem itemCustom = new JMenuItem("Custom");
+    protected JColorChooser colorChooser;
+    protected JFileChooser fileChooser = new JFileChooser();
 
-   
-    public PersonFormV11(String window) {
-        super(window);
+    //title name
+    public PersonFormV11(String windowName) {
+        super(windowName);
     }
- 
-    @Override
-    protected void addComponents() {
-        super.addComponents();    
-        openFileChooser = new JFileChooser();   
-        saveFileChooser = new JFileChooser();
-        
-    } 
-    @Override
-    protected void addMenus() {
-        super.addMenus();        
-        color.add(itemCustom);   
+    //add custom item to color menu.
+    public void addMenus() {
+        super.addMenus();
+        color.add(itemCustom);
     }
-  
+
+    //handle with file saving
+    public void handleSaveMenu() {
+        int click = fileChooser.showSaveDialog(PersonFormV11.this);
+        if (click == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            JOptionPane.showMessageDialog(null, "Saving file " + file.getName());
+        } else {
+            JOptionPane.showMessageDialog(null, "Save command cancelled by user.");
+        }
+    }
+    //handle with file opening
+    public void handleOpenMenu() {
+        int click = fileChooser.showOpenDialog(PersonFormV11.this);
+        if (click == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            JOptionPane.showMessageDialog(null, "Opening file " + file.getName());
+        } else {
+            JOptionPane.showMessageDialog(null, "Open command cancelled by user.");
+        }
+    }
+
+    // add listener for each Jmenuitem
     public void addListeners() {
         super.addListeners();
-        
-        itemOpen.addActionListener(this);  
+
+        itemCustom.addActionListener(this);
+        itemOpen.addActionListener(this);
         itemSave.addActionListener(this);
-        itemCustom.addActionListener(this);   
-        itemExit.addActionListener(this);      
+        itemExit.addActionListener(this);
     }
 
-   
-    @Override
+    //when change textFiled color and textArea color
     public void actionPerformed(ActionEvent event) {
         super.actionPerformed(event);
-        Object source = event.getSource();
-        
-        if(source == itemCustom){
-            
-            chooseColor = new JColorChooser();
-            
-            chooseColor.setColor(Color.BLACK);
-            
-            sourceDialog = JOptionPane.showOptionDialog(this, chooseColor, "Chooser color", JOptionPane.YES_NO_CANCEL_OPTION, 
-            JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-           
-            if(sourceDialog == JOptionPane.YES_OPTION){
-               
-                Color fontColor = chooseColor.getColor();
-                textfieldName.setForeground(fontColor);
-                heightTextField.setForeground(fontColor);
-                weightTextField.setForeground(fontColor);
-                birthTextField.setForeground(fontColor);
-                textNote.setForeground(fontColor);
-            }
-            
-            if(sourceDialog == JOptionPane.CANCEL_OPTION){
-                
-                chooseColor.setColor(Color.BLACK);
-                Color fontColor = chooseColor.getColor();
-                textfieldName.setForeground(fontColor);
-                heightTextField.setForeground(fontColor);
-                weightTextField.setForeground(fontColor);
-                birthTextField.setForeground(fontColor);
-                textNote.setForeground(fontColor);
-                
-            }
-            
-        }else if(source == itemOpen){     
-          
-            sourceOpenFileChooser = openFileChooser.showOpenDialog(this);
-            
-            if(sourceOpenFileChooser == JFileChooser.APPROVE_OPTION){
-              
-                StringBuffer messageShowOpen = new StringBuffer();
-                File file = openFileChooser.getSelectedFile();
-                String fileChoosed = "Opening file " + file.getName();
-                messageShowOpen.append(fileChoosed);
-                JOptionPane.showMessageDialog(this, messageShowOpen, "Message", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(icon));
-            }
-           
-            if(sourceOpenFileChooser == JFileChooser.CANCEL_OPTION){
-                
-                StringBuffer messageShowOpen = new StringBuffer();
-                String fileChoosed = "Open command cancelled by user.";
-                messageShowOpen.append(fileChoosed);
-                JOptionPane.showMessageDialog(this, messageShowOpen, "Message", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(icon));
-            }
-        }else if(source == itemSave){     
-            sourceSaveFileChooser = saveFileChooser.showSaveDialog(this);
-            
-            if(sourceSaveFileChooser == JFileChooser.APPROVE_OPTION){
-                
-                StringBuffer messageShowSave = new StringBuffer();
-                File file = saveFileChooser.getSelectedFile();
-                String fileChoosed = "Saving file " + file.getName();
-                messageShowSave.append(fileChoosed);
-                JOptionPane.showMessageDialog(this, messageShowSave, "Message", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(icon));
-            }
-           
-            if(sourceSaveFileChooser == JFileChooser.CANCEL_OPTION){
-               
-                StringBuffer messageShowSave = new StringBuffer();
-                String fileChoosed = "Save command cancelled by user.";
-                messageShowSave.append(fileChoosed);
-                JOptionPane.showMessageDialog(this, messageShowSave, "Message", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(icon));
-            }
-        }else if(source == itemExit){            
-            System.exit(0);
-        }      
-        
+        Object src;
+        src = event.getSource();
+        //if user click custom
+        if (src == itemCustom) {
+            Color newColor = JColorChooser.showDialog(null, "Choose color", Color.BLACK);
+            //set color on foreground
+            textfieldName.setForeground(newColor);
+            heightTextField.setForeground(newColor);
+            weightTextField.setForeground(newColor);
+            birthTextField.setForeground(newColor);
+            textNote.setForeground(newColor);
+        }
+        //event when user choose file then click open.
+        if (src == itemOpen) {
+            handleOpenMenu();
+        //event when user choose file then click save.
+        } else if (src == itemSave) {
+            handleSaveMenu();
+        }
+        //event when user click Exit.
+        if (src == itemExit) {
+            System.exit(1);
+        }
     }
 
-    public static void createAndShowGUI() {
-        PersonFormV11 personFormV11 = new PersonFormV11("Person Form V11");   
-        personFormV11.addComponents();      
-        personFormV11.addMenus();          
-        personFormV11.addListeners();       
-        personFormV11.setFrameFeatures();  
-    }
-
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
             }
         });
     }
+
+    public static void createAndShowGUI() {
+        PersonFormV11 pFormV11 = new PersonFormV11("Person Form V11");
+        pFormV11.addKeys();
+        pFormV11.addMenus();
+        pFormV11.addComponents();
+        pFormV11.addListeners();
+        pFormV11.setFrameFeatures();
+    }
+
 }
-
-
-
-
